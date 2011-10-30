@@ -1,9 +1,14 @@
 package org.gestaltfoundation.couchdb
-import net.liftweb.json.{DefaultFormats,parse}
+
+import dispatch._
 
 trait Base {
-    implicit val formats = DefaultFormats
-    def parseJson ( json: String ) = parse ( json )
+    val http = new Http
+
+    def getResponse ( urlstring: String ) = {
+        var resp = http ( url ( urlstring ) as_str )
+        new Response ( resp )
+    }
 }
 
 // vim: set ts=4 sw=4 et:
