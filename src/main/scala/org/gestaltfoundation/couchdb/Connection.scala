@@ -5,7 +5,7 @@ case class ConnectionInfo ( val couchdb: String, val version: String )
 
 class Connection ( host: String, port: Int ) extends Base {
 
-    val server_url = "http://%s:%d/".format ( host, port )
+    val server_url = "http://%s:%d".format ( host, port )
     val couch_version = connect
 
     def connect: String = {
@@ -19,6 +19,14 @@ class Connection ( host: String, port: Int ) extends Base {
 
     def apply ( db: String ) {
         // get a Db object
+    }
+
+    def listDatabases : List[String] = {
+        try {
+            getResponse ( server_url + "/_all_dbs" ).as[List[String]]
+        } catch {
+            case e => throw ConnectionException ( "Communication with CouchDB was unsuccessful. Exception was: %s".format( e.getClass.getName ) )
+        }
     }
 }
 

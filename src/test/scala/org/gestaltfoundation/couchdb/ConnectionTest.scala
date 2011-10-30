@@ -15,6 +15,12 @@ class ConnectionTest extends Spec with BeforeAndAfter with ShouldMatchers {
         it ( "should successfully connect to the specified CouchDB instance" ) {
             conn.couch_version should equal ( "1.2.0a-" )
         }
+
+        it ( "should return a list of dbs" ) {
+            val dbs: List[String] = conn.listDatabases
+            dbs should contain ( "_users" )
+            dbs should contain ( "_replicator" )
+        }
     }
 
     describe ( "An invalid Connection" ) {
