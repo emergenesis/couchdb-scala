@@ -14,16 +14,20 @@ use in `Emergenesis' <http://www.emergenesis.com>`
 There are no installation scripts or pre-compiled binaries currently. You can
 package this yourself using `SBT <https://github.com/harrah/xsbt/wiki>`:
 
-    $ sbt
-    sbt> compile
-    sbt> package
+```bash
+$ sbt
+sbt> compile
+sbt> package
+```
 
 # Usage
 
 ## Connecting to a database
 
-    import org.gestaltfoundation.couchdb._
+```scala
+import org.gestaltfoundation.couchdb._
 
-    val conn = new Connection ( "localhost", 5984 )
-    val databases = conn.listDatabases
+val conn = new Connection ( "localhost", 5984 )
+val databases = conn.listDatabases
+```
 
