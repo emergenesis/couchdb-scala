@@ -3,6 +3,7 @@ package org.gestaltfoundation.couchdb
 import dispatch._
 
 case class Error ( val error: String, val reason: String )
+case class NewSuccess ( ok: Boolean, id: String, rev: String )
 
 trait Base {
 
@@ -33,6 +34,13 @@ trait Base {
         val resp = http ( url ( urlstring ).DELETE.as_str )
         http.shutdown
         new Response ( resp )
+    }
+
+    def post ( urlstring: String, data: String ) = {
+        val http = new Http
+        val resp = http ( url ( urlstring ).POST.<<( data, "application/json" ).as_str )
+        http.shutdown
+        new Response( resp )
     }
 }
 

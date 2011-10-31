@@ -1,5 +1,8 @@
 package org.gestaltfoundation.couchdb
 
+import net.liftweb.json._
+import net.liftweb.json.Serialization.write
+
 case class DatabaseInfo ( val db_name: String, val doc_count: Int, 
     val doc_del_count: Int, val update_seq: Int, val purge_seq: Int,
     val compact_running: Boolean, val disk_size: Int, val data_size: Int,
@@ -18,6 +21,17 @@ class Db ( val host: String, val port: Int, val name: String ) extends Base {
 
     def exists: Boolean = db_exists
     def info = db_info
+
+    def save[T<: AnyRef] ( obj: (T) ): Option[String] = {
+        implicit val formats = DefaultFormats
+        var json = write ( obj )
+        val resp = post ( base_url, json )
+        if ( resp.isError ) {
+            None
+        } else {
+            Some(resp.as[NewSuccess].id)
+        }
+    }
 }
 
 // vim: set ts=4 sw=4 :et

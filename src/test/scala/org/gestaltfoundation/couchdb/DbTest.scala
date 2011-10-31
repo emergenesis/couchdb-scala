@@ -3,23 +3,32 @@ package org.gestaltfoundation.couchdb
 import org.scalatest.{Spec,BeforeAndAfter}
 import org.scalatest.matchers.ShouldMatchers
 
+case class ObjectTest ( Type: String, title: String )
+
 class DbTest extends Spec with BeforeAndAfter with ShouldMatchers {
     
     var conn: Connection = _
+    var existing_db: Db = _
 
     before {
         conn = new Connection ( "localhost", 5984 )
+        existing_db = conn.createDatabase ( "existingdb" )
+    }
+
+    after {
+        conn.deleteDatabase ( "existingdb" )
     }
 
     describe ( "A valid database" ) {
         it ( "should return the appropriate metadata" ) {
-            conn.createDatabase ( "existingdb" )
+            existing_db.exists should be ( true )
+            existing_db.info.db_name should equal ( "existingdb" )
+        }
 
-            val db = conn("existingdb")
-            db.exists should be ( true )
-            db.info.db_name should equal ( "existingdb" )
-
-            conn.deleteDatabase ( "existingdb" )
+        it ( "should store an object" ) {
+            val obj = ObjectTest ( "test", "Test object" )
+            val id = existing_db.save ( obj )
+            id.isEmpty should be ( false )
         }
     }
 
