@@ -10,48 +10,26 @@ class Connection ( host: String, port: Int ) extends Base {
     val couch_version = connect
 
     def connect: String = {
-        try {
-            var info = get ( server_url ).as[ConnectionInfo]
-            info.version
-        } catch {
-            case e => throw ConnectionException ( 
-                "Could not connect to CouchDB server at %s:%d; exception was %s".
-                format ( host, port, e.getClass.getName ) 
-            )
-        }
+        var info = get ( server_url ).as[ConnectionInfo]
+        info.version
     }
 
-    def apply ( db: String ) {
-        // get a Db object
+    def apply ( dbname: String ): Db = {
+        new Db ( host, port, dbname )
     }
 
     def listDatabases : List[String] = {
-        try {
-            get ( server_url + "/_all_dbs" ).as[List[String]]
-        } catch {
-            case e => throw ConnectionException ( 
-                "Communication with CouchDB was unsuccessful. Exception was: %s".
-                format( e.getClass.getName ) 
-            )
-        }
+        get ( server_url + "/_all_dbs" ).as[List[String]]
     }
 
-    def createDatabase ( name: String ) : Boolean = {
-        try {
-            val resp = put ( server_url + "/" + name ).as[QuerySuccess]
-            resp.ok
-        } catch {
-            case e => false
-        }
+    def createDatabase ( name: String ) = {
+        val resp = put ( server_url + "/" + name ).as[QuerySuccess]
+        new Db ( host, port, name )
     }
 
     def deleteDatabase ( name: String ) : Boolean = {
-        try {
-            val resp = delete ( server_url + "/" + name ).as[QuerySuccess]
-            resp.ok
-        } catch {
-            case e => false
-        }
+        val resp = delete ( server_url + "/" + name ).as[QuerySuccess]
+        resp.ok
     }
 }
 

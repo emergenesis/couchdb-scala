@@ -23,7 +23,8 @@ class ConnectionTest extends Spec with BeforeAndAfter with ShouldMatchers {
         }
 
         it ( "should create a new database" ) {
-            conn.createDatabase ( "testdb" ) should be ( true )
+            val db = conn.createDatabase ( "testdb" ) 
+            db.exists should be ( true )
         }
 
         it ( "should delete a database" ) {

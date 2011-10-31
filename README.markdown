@@ -30,6 +30,9 @@ import org.gestaltfoundation.couchdb._
 val conn = new Connection ( "localhost", 5984 )
 
 conn.couch_version // res0: String = 1.2.0a-
+
+// res1: org.gestaltfoundation.couchdb.Db = org.gestaltfoundation.couchdb.Db@41b0b9ed
+val db = conn( "testdb" )
 ```
 
 ## Managing DBs

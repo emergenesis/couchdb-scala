@@ -2,13 +2,23 @@ package org.gestaltfoundation.couchdb
 
 import dispatch._
 
+case class Error ( val error: String, val reason: String )
+
 trait Base {
 
     def get ( urlstring: String ) = {
-        val http = new Http
-        val resp = http ( url ( urlstring ) as_str )
-        http.shutdown
-        new Response ( resp )
+        try {
+            val http = new Http
+            val resp = http ( url ( urlstring ) as_str )
+            http.shutdown
+            new Response ( resp )
+        } catch {
+            case e: StatusCode => new Response ( e.contents )
+            case e => throw ConnectionException (
+                "Could not connect to CouchDB server at %s; exception was %s".
+                format ( urlstring, e.getClass.getName ) 
+            )
+        }
     }
 
     def put ( urlstring: String ) = {
