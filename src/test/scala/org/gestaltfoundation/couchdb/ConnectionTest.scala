@@ -21,6 +21,14 @@ class ConnectionTest extends Spec with BeforeAndAfter with ShouldMatchers {
             dbs should contain ( "_users" )
             dbs should contain ( "_replicator" )
         }
+
+        it ( "should create a new database" ) {
+            conn.createDatabase ( "testdb" ) should be ( true )
+        }
+
+        it ( "should delete a database" ) {
+            conn.deleteDatabase ( "testdb" ) should be ( true )
+        }
     }
 
     describe ( "An invalid Connection" ) {

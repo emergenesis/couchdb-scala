@@ -28,6 +28,31 @@ sbt> package
 import org.gestaltfoundation.couchdb._
 
 val conn = new Connection ( "localhost", 5984 )
-val databases = conn.listDatabases
+
+conn.couch_version // res0: String = 1.2.0a-
+```
+
+## Managing DBs
+
+```scala
+import org.gestaltfoundation.couchdb._
+
+// connect to localhost
+val conn = new Connection ( "localhost", 5984 )
+
+// get a list of databases
+conn.listDatabases // res1: List[String] = List(_replicator, _users)
+
+// create a database
+conn.createDatabase ( "testdb" ) // res2: Boolean = true
+
+// get a list of databases
+conn.listDatabases // res3: List[String] = List(_replicator, _users, testdb)
+
+// delete the database
+conn.deleteDatabase ( "testdb" ) // res4: Boolean = true
+
+// get a list of databases
+conn.listDatabases // res5: List[String] = List(_replicator, _users)
 ```
 

@@ -2,6 +2,7 @@ package org.gestaltfoundation.couchdb
 
 case class ConnectionException ( val msg: String ) extends Exception
 case class ConnectionInfo ( val couchdb: String, val version: String )
+case class QuerySuccess ( val ok: Boolean )
 
 class Connection ( host: String, port: Int ) extends Base {
 
@@ -10,10 +11,13 @@ class Connection ( host: String, port: Int ) extends Base {
 
     def connect: String = {
         try {
-            var info = getResponse ( server_url ).as[ConnectionInfo]
+            var info = get ( server_url ).as[ConnectionInfo]
             info.version
         } catch {
-            case e => throw ConnectionException ( "Could not connect to CouchDB server at %s:%d; exception was %s".format ( host, port, e.getClass.getName ) )
+            case e => throw ConnectionException ( 
+                "Could not connect to CouchDB server at %s:%d; exception was %s".
+                format ( host, port, e.getClass.getName ) 
+            )
         }
     }
 
@@ -23,9 +27,30 @@ class Connection ( host: String, port: Int ) extends Base {
 
     def listDatabases : List[String] = {
         try {
-            getResponse ( server_url + "/_all_dbs" ).as[List[String]]
+            get ( server_url + "/_all_dbs" ).as[List[String]]
         } catch {
-            case e => throw ConnectionException ( "Communication with CouchDB was unsuccessful. Exception was: %s".format( e.getClass.getName ) )
+            case e => throw ConnectionException ( 
+                "Communication with CouchDB was unsuccessful. Exception was: %s".
+                format( e.getClass.getName ) 
+            )
+        }
+    }
+
+    def createDatabase ( name: String ) : Boolean = {
+        try {
+            val resp = put ( server_url + "/" + name ).as[QuerySuccess]
+            resp.ok
+        } catch {
+            case e => false
+        }
+    }
+
+    def deleteDatabase ( name: String ) : Boolean = {
+        try {
+            val resp = delete ( server_url + "/" + name ).as[QuerySuccess]
+            resp.ok
+        } catch {
+            case e => false
         }
     }
 }
