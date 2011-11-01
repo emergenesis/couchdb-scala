@@ -22,6 +22,9 @@ sbt> package
 
 # Usage
 
+Below is a summary of the current scope of couchdb-scala along with its basic
+usage. Full API documentation is available at http://apis.emergenesis.com/couchdb-scala/ .
+
 ## Connecting to a database
 
 ```scala
@@ -31,7 +34,7 @@ val conn = new Connection ( "localhost", 5984 )
 
 conn.couch_version // res0: String = 1.2.0a-
 
-// res1: org.gestaltfoundation.couchdb.Db = org.gestaltfoundation.couchdb.Db@41b0b9ed
+// db: org.gestaltfoundation.couchdb.Db = org.gestaltfoundation.couchdb.Db@41b0b9ed
 val db = conn( "testdb" )
 ```
 
@@ -57,5 +60,23 @@ conn.deleteDatabase ( "testdb" ) // res4: Boolean = true
 
 // get a list of databases
 conn.listDatabases // res5: List[String] = List(_replicator, _users)
+```
+
+## Managing Documents
+
+### Creating a New Document
+
+```scala
+import org.gestaltfoundation.couchdb._
+
+val conn = new Connection ( "localhost", 5984 )
+val db = conn( "testdb" )
+
+// case classes are required as they will be serialized to JSON
+case class TestObject ( testString: String )
+
+// create a new instance of the object and save it
+val obj = TestObject ( "Hello!" )
+val id = db.save( obj ) // id: String = d1652d6ee76221dec66e26cb6f0024e7
 ```
 
