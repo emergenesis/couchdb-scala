@@ -42,14 +42,15 @@ class Db ( val host: String, val port: Int, val name: String ) extends Base {
       * @param obj The object to save
       * @return The ID if the operation was successful, else empty
       */
-    def save[T<: AnyRef] ( obj: (T) ): Option[String] = {
+    def save[T<: Entity] ( obj: (T) ): Boolean = {
         implicit val formats = DefaultFormats
         var json = write ( obj )
         val resp = post ( base_url, json )
         if ( resp.isError ) {
-            None
+            false
         } else {
-            Some(resp.as[NewSuccess].id)
+            obj.id = resp.as[NewSuccess].id
+            true
         }
     }
 }

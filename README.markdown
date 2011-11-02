@@ -72,11 +72,14 @@ import org.gestaltfoundation.couchdb._
 val conn = new Connection ( "localhost", 5984 )
 val db = conn( "testdb" )
 
-// case classes are required as they will be serialized to JSON
-case class TestObject ( testString: String )
+// case classes that inherit the trait Entity are required as they will be
+// serialized to JSON; the Entity trait provides convenience features like
+// an id field to be populated on save
+case class TestObject ( testString: String ) extends Entity
 
 // create a new instance of the object and save it
 val obj = TestObject ( "Hello!" )
-val id = db.save( obj ) // id: String = d1652d6ee76221dec66e26cb6f0024e7
+val success = db.save( obj ) // success: Boolean = true
+obj.id // res0: String = d1652d6ee76221dec66e26cb6f0024e7
 ```
 
