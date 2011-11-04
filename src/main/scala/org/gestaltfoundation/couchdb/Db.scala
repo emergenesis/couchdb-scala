@@ -41,11 +41,12 @@ class Db ( val host: String, val port: Int, val name: String ) extends Base {
       * @tparam T The case class of the object
       * @param obj The object to save
       * @return The ID if the operation was successful, else empty
+      * 
+      * @todo Add ability to update if ID is present
       */
     def save[T<: Entity] ( obj: (T) ): Boolean = {
         implicit val formats = DefaultFormats
-        var json = write ( obj )
-        val resp = post ( base_url, json )
+        val resp = post ( base_url, obj.json )
         if ( resp.isError ) {
             false
         } else {

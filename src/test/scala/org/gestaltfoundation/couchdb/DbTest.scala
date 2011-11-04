@@ -3,7 +3,7 @@ package org.gestaltfoundation.couchdb
 import org.scalatest.{Spec,BeforeAndAfter}
 import org.scalatest.matchers.ShouldMatchers
 
-case class ObjectTest ( Type: String, title: String ) extends Entity
+case class ObjectTest ( title: String, msg: String ) extends Entity ( "test" )
 
 class DbTest extends Spec with BeforeAndAfter with ShouldMatchers {
     
@@ -26,7 +26,7 @@ class DbTest extends Spec with BeforeAndAfter with ShouldMatchers {
         }
 
         it ( "should store an object" ) {
-            val obj = ObjectTest ( "test", "Test object" )
+            val obj = ObjectTest ( "Test", "Test object" )
             val success = existing_db.save ( obj )
             success should be ( true )
             obj.id.isEmpty should be ( false )

@@ -74,8 +74,9 @@ val db = conn( "testdb" )
 
 // case classes that inherit the trait Entity are required as they will be
 // serialized to JSON; the Entity trait provides convenience features like
-// an id field to be populated on save
-case class TestObject ( testString: String ) extends Entity
+// an id field to be populated on save; the string passed to Entity will be set
+// as the 'Type' field in the resulting CouchDB document
+case class TestObject ( testString: String ) extends Entity ( "test" )
 
 // create a new instance of the object and save it
 val obj = TestObject ( "Hello!" )
