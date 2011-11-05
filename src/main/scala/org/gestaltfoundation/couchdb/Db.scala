@@ -40,7 +40,7 @@ class Db ( val host: String, val port: Int, val name: String ) extends Base {
       *
       * @tparam T The case class of the object
       * @param obj The object to save
-      * @return The ID if the operation was successful, else empty
+      * @return True if successful, else false
       * 
       * @todo Add ability to update if ID is present
       */
@@ -50,9 +50,28 @@ class Db ( val host: String, val port: Int, val name: String ) extends Base {
         if ( resp.isError ) {
             false
         } else {
-            obj.id = resp.as[NewSuccess].id
+            val res = resp.as[NewSuccess]
+            obj.id = res.id
+            obj.revision = res.rev
             true
         }
+    }
+
+    /** Destroy an object that is already in the database
+      *
+      * @tparam T The case class of the object
+      * @param obj The object to destroy
+      * @return True if successful, else false
+      */
+    def destroy[T<: Entity] ( obj: (T) ): Boolean = {
+        if ( ! obj.id.isEmpty && ! obj.revision.isEmpty ) {
+            val resp = delete ( base_url + "/" + obj.id + "?rev=" + obj.revision ).as[QuerySuccess]
+            if ( resp.ok ) {
+                obj.id = ""
+                obj.revision = ""
+                true
+            } else false
+        } else false
     }
 }
 

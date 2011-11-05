@@ -6,7 +6,8 @@ import net.liftweb.json.Serialization.write
 /** Convenience features for case classes representing db objects
   */
 class Entity ( private val type_str: String ) {
-    var id: String = _
+    var id: String = ""
+    var revision: String = ""
     private val type_json = "{ \"Type\": \"%s\" }".format( type_str )
     implicit val formats = DefaultFormats
 
