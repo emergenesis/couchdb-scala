@@ -23,7 +23,9 @@ sbt> package
 # Usage
 
 Below is a summary of the current scope of couchdb-scala along with its basic
-usage. Full API documentation is available at http://apis.emergenesis.com/couchdb-scala/ .
+usage. Full API documentation is available at http://couchdb.docs.emergenesis.com .
+
+__NOTE:__ The URL for the API documentation has changed. See above for new URL.
 
 ## Connecting to a database
 
@@ -82,5 +84,26 @@ case class TestObject ( testString: String ) extends Entity ( "test" )
 val obj = TestObject ( "Hello!" )
 val success = db.save( obj ) // success: Boolean = true
 obj.id // res0: String = d1652d6ee76221dec66e26cb6f0024e7
+obj.revision // res1: String = 1-89f9f89dd99c9c282
+```
+
+### Destroying a Document
+
+```scala
+import org.gestaltfoundation.couchdb._
+
+val conn = new Connection ( "localhost", 5984 )
+val db = conn( "testdb" )
+
+case class TestObject ( testString: String ) extends Entity ( "test" )
+val obj = TestObject ( "Hello!" )
+var success = db.save( obj ) // success: Boolean = true
+obj.id // res0: String = d1652d6ee76221dec66e26cb6f0024e7
+obj.revision // res1: String = 1-89f9f89dd99c9c282
+
+// destory the document at its current revision
+success = db.destroy ( obj ) // success: Boolean true
+obj.id // res2: String = ""
+obj.revision // res3: String = ""
 ```
 
